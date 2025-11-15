@@ -1,6 +1,6 @@
 import requests
 import json
-
+from datetime import date
 import os
 from dotenv import load_dotenv
 
@@ -95,10 +95,30 @@ def extract_video_data(video_ids):
         raise e
 
 
-
+def save_to_json(extracted_data):
+    file_path = f'video_data_{date.today()}.json'
+    try:
+        with open(file_path, 'w', encoding='utf-8') as json_outfile:
+            json.dump(extracted_data, json_outfile, indent=4, ensure_ascii=False)
+        print(f"Data saved to {file_path}")
+    except IOError as e:
+        print(f"Error saving data to {file_path}: {e}")
 
 
 if __name__ == "__main__":
-    get_playlist_id(CHANNEL_HANDLE)  # Pass the CHANNEL_HANDLE argument
-    video_ids = get_video_ids(playlistId)
-    extract_video_data(video_ids)
+    try:
+        # 1. Get the uploads playlist ID
+        # It's better practice to use the returned value from get_playlist_id
+        uploads_playlist_id = get_playlist_id(CHANNEL_HANDLE) 
+        
+        # 2. Get all video IDs
+        video_ids = get_video_ids(uploads_playlist_id) 
+
+        # 3. Extract the video data and STORE IT in a variable
+        video_data = extract_video_data(video_ids) # <--- STORE THE RESULT HERE
+        
+        # 4. Pass the stored data (list of dicts) to the save function
+        save_to_json(video_data) # <--- PASS THE VARIABLE HERE
+
+    except Exception as e:
+        print(f"An error occurred in the main process: {e}")
