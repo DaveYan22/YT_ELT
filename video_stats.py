@@ -94,9 +94,14 @@ def extract_video_data(video_ids):
     except requests.exceptions.RequestException as e:
         raise e
 
-
 def save_to_json(extracted_data):
-    file_path = f'video_data_{date.today()}.json'
+    data_dir = 'data'
+    os.makedirs(data_dir, exist_ok=True)
+
+    file_name = f'video_data_{date.today()}.json'
+    file_path = os.path.join(data_dir, file_name)
+    # --- END MODIFICATION ---
+    
     try:
         with open(file_path, 'w', encoding='utf-8') as json_outfile:
             json.dump(extracted_data, json_outfile, indent=4, ensure_ascii=False)
@@ -107,18 +112,10 @@ def save_to_json(extracted_data):
 
 if __name__ == "__main__":
     try:
-        # 1. Get the uploads playlist ID
-        # It's better practice to use the returned value from get_playlist_id
         uploads_playlist_id = get_playlist_id(CHANNEL_HANDLE) 
-        
-        # 2. Get all video IDs
         video_ids = get_video_ids(uploads_playlist_id) 
-
-        # 3. Extract the video data and STORE IT in a variable
-        video_data = extract_video_data(video_ids) # <--- STORE THE RESULT HERE
-        
-        # 4. Pass the stored data (list of dicts) to the save function
-        save_to_json(video_data) # <--- PASS THE VARIABLE HERE
+        video_data = extract_video_data(video_ids) 
+        save_to_json(video_data) 
 
     except Exception as e:
         print(f"An error occurred in the main process: {e}")
