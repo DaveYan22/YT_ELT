@@ -7,4 +7,5 @@ ENV AIRFLOW_HOME=/opt/airflow
 
 COPY requirements.txt ./
 
-RUN pip install --no-cache-dir "apache-airflow==${AIRFLOW_VERSION}" -r /requirements.txt
+# Fix: Remove the leading slash (/) to correctly reference the file in the current directory.
+RUN pip install --no-cache-dir "apache-airflow==${AIRFLOW_VERSION}" -r requirements.txt
