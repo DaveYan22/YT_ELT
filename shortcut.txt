@@ -1,0 +1,4 @@
+# docker exec -it postgres psql -U yt_api_user -d elt_db
+# docker exec -it airflow-scheduler bash
+
+# table yt_api
